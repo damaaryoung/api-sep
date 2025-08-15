@@ -7,11 +7,24 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
-use DB;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use App\Libraries\Constant;
+use App\Libraries\ResponseLibrary;
+use App\Libraries\RequestLibrary;
 
 class CategoryController extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
+    protected ResponseLibrary $response;
+    protected RequestLibrary $request_param;
+
+    public function __construct()
+    {
+        $this->response = new ResponseLibrary();
+        $this->request_param = new RequestLibrary();
+    }
 
     public function index(Request $request)
     {
@@ -39,7 +52,17 @@ class CategoryController extends BaseController
         ]);
     }
 
-    public function addCategory() : Returntype {
-        
+    public function searchCategory(Request $request){
+        $rules = [
+            "search_data" => "required"
+        ];
+        $validator = Validator::make($request->input(Constant::REQUEST_DATA), $rules);
+        if ($validator->fails()) {
+            return $this->response->format_response(Constant::RC_PARAM_NOT_VALID, $validator->errors()->first(), "get_merchant_existing");
+        }
+        $param = $this->request_param->get_param($request->input(Constant::REQUEST_DATA)); 
+        $username = $request->header('X-Username');
+
+        dd($param);
     }
 }
