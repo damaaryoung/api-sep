@@ -28,8 +28,7 @@ Route::get('/', function () {
 
 Route::get('/users', [UserController::class, 'index']);
 Route::prefix('categories')->group(function () {
-    Route::get('/', [CategoryController::class, 'index']);
-    Route::get('/show', [CategoryController::class, 'show']);
-    Route::post('search', [CategoryController::class, 'searchCategory']);
+    Route::post('/insert', [CategoryController::class, 'insertCateory']);
+    Route::post('/show', [CategoryController::class, 'show']);
 });
 
