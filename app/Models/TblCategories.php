@@ -37,8 +37,6 @@ class TblCategories extends Model
             'created_at'  => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at'  => NULL
         ];
-        
-        // dd($dataCategories);
 
         $save = DB::table($this->table)->insert($dataCategories);
         if ($save) {
@@ -61,5 +59,47 @@ class TblCategories extends Model
 		    return false;
         }
 	    return $dataList;
+    }
+
+    public function updateData($data, string $username): bool {
+        if (empty($data->id)) {
+            return false;
+        }
+        $id = (int) $data->id;
+        $payload = [
+            'name'        => $data->name,
+            'description' => $data->description,
+            'f1'          => $data->f1,
+            'f2'          => $data->f2,
+            'f3'          => $data->f3,
+            'f4'          => $data->f4,
+            'updated_by'  => $username,
+            'updated_at'  => Carbon::now()->format('Y-m-d H:i:s')
+        ];
+        try {
+            $affected = DB::table($this->table)
+                ->where('id', $id)
+                ->update($payload);
+            return $affected > 0;
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    public function deleteData(int $id): bool
+    {
+        if (empty($id)) {
+            return false;
+        }
+
+        try {
+            $deleted = DB::table($this->table)
+                ->where('id', $id)
+                ->delete();
+
+            return $deleted > 0;
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 }

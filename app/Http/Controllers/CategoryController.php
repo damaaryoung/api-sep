@@ -95,4 +95,50 @@ class CategoryController extends BaseController
         return $this->response->format_response(Constant::RC_SUCCESS, Constant::DESC_SUCCESS, "Search Category", $response);
         
     }
+
+    public function update(Request $request){
+        $rules = [
+            "id" => "required",
+            "name" => "nullable",
+            "description" => "nullable",
+            "f1" => "nullable",
+            "f2" => "nullable",
+            "f3" => "nullable",
+            "f4" => "nullable"
+        ];
+        $validator = Validator::make($request->input(Constant::REQUEST_DATA), $rules);
+        if ($validator->fails()) {
+            return $this->response->format_response(Constant::RC_PARAM_NOT_VALID, $validator->errors()->first(), "get_merchant_existing");
+        }
+        $param = $this->request_param->get_param($request->input(Constant::REQUEST_DATA)); 
+        $username = $request->header('X-Username');
+
+        $updateData = $this->tbl_categories->updateData($param, $username);
+        if (!$updateData) {
+			return $this->response->format_response(Constant::RC_DB_ERROR, "Gagal Update Category", "Update Categories");
+		}
+        return $this->response->format_response(Constant::RC_SUCCESS, Constant::DESC_SUCCESS, "Update Categories");
+    }
+
+    public function delete(Request $request){
+        $rules = [
+            "id" => "required"
+        ];
+        $validator = Validator::make($request->input(Constant::REQUEST_DATA), $rules);
+        if ($validator->fails()) {
+            return $this->response->format_response(Constant::RC_PARAM_NOT_VALID, $validator->errors()->first(), "get_merchant_existing");
+        }
+        $param = $this->request_param->get_param($request->input(Constant::REQUEST_DATA)); 
+        $username = $request->header('X-Username');
+
+        $id = (int) $param->id;
+        $result = $this->tbl_categories->deleteData($id);
+
+        if ($result) {
+            return $this->response->format_response(Constant::RC_SUCCESS, Constant::DESC_SUCCESS, "Delete Categories");
+        } else {
+			return $this->response->format_response(Constant::RC_DB_ERROR, "Gagal Delete Category", "Delete Categories");
+        }
+    }
+
 }

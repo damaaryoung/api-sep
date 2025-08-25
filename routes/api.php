@@ -30,5 +30,7 @@ Route::get('/users', [UserController::class, 'index']);
 Route::prefix('categories')->group(function () {
     Route::post('/insert', [CategoryController::class, 'insertCateory']);
     Route::post('/show', [CategoryController::class, 'show']);
+    Route::post('/update', [CategoryController::class, 'update']);
+    Route::post('/delete', [CategoryController::class, 'delete']);
 });
 
