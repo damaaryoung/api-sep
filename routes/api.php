@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SubCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,9 +29,15 @@ Route::get('/', function () {
 
 Route::get('/users', [UserController::class, 'index']);
 Route::prefix('categories')->group(function () {
-    Route::post('/insert', [CategoryController::class, 'insertCateory']);
+    Route::post('/insert', [CategoryController::class, 'insertCategory']);
     Route::post('/show', [CategoryController::class, 'show']);
     Route::post('/update', [CategoryController::class, 'update']);
     Route::post('/delete', [CategoryController::class, 'delete']);
+});
+Route::prefix('sub-category')->group(function () {
+    Route::post('/insert', [SubCategoryController::class, 'insertSubCateory']);
+    Route::post('/show', [SubCategoryController::class, 'show']);
+    Route::post('/update', [SubCategoryController::class, 'update']);
+    Route::post('/delete', [SubCategoryController::class, 'delete']);
 });
 

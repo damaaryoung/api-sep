@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class TblCategories extends Model
+class TblSubCategory extends Model
 {
-    protected $table = 'categories';
+    protected $table = 'sub_category';
 
     protected $columns = [
 		'name',
+        'categories_id',
 		'description',
 		'f1',
 		'f2',
@@ -26,15 +27,16 @@ class TblCategories extends Model
     public function insertData($data, $username){
         $dataCategories = [
             'name'        => $data->name,
-            'description' => $data->description,
-            'f1'          => $data->f1,
-            'f2'          => $data->f2,
-            'f3'          => $data->f3,
-            'f4'          => $data->f4,
-            'created_by'  => $username,
-            'updated_by'  => "NULL",
-            'created_at'  => Carbon::now()->format('Y-m-d H:i:s'),
-            'updated_at'  => NULL
+            'categories_id' => $data->categories_id,
+            'description'   => $data->description,
+            'f1'            => $data->f1,
+            'f2'            => $data->f2,
+            'f3'            => $data->f3,
+            'f4'            => $data->f4,
+            'created_by'    => $username,
+            'updated_by'    => "NULL",
+            'created_at'    => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at'    => NULL
         ];
 
         $save = DB::table($this->table)->insert($dataCategories);
@@ -66,14 +68,15 @@ class TblCategories extends Model
         }
         $id = (int) $data->id;
         $payload = [
-            'name'        => $data->name,
-            'description' => $data->description,
-            'f1'          => $data->f1,
-            'f2'          => $data->f2,
-            'f3'          => $data->f3,
-            'f4'          => $data->f4,
-            'updated_by'  => $username,
-            'updated_at'  => Carbon::now()->format('Y-m-d H:i:s')
+            'name'          => $data->name,
+            'categories_id' => $data->categories_id,
+            'description'   => $data->description,
+            'f1'            => $data->f1,
+            'f2'            => $data->f2,
+            'f3'            => $data->f3,
+            'f4'            => $data->f4,
+            'updated_by'    => $username,
+            'updated_at'    => Carbon::now()->format('Y-m-d H:i:s')
         ];
         try {
             $affected = DB::table($this->table)
@@ -100,17 +103,5 @@ class TblCategories extends Model
         } catch (\Throwable $e) {
             return false;
         }
-    }
-
-    public function getById(int $id)
-    {
-        $getData = DB::table($this->table)
-            ->where('id', $id)
-            ->first();
-
-        if (!$getData) {
-            return false;
-        }
-        return $getData;
     }
 }
