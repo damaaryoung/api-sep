@@ -104,4 +104,16 @@ class TblSubCategory extends Model
             return false;
         }
     }
+    
+    public function getById(int $id)
+    {
+        $getData = DB::table($this->table)
+            ->where('id', $id)
+            ->first();
+
+        if (!$getData) {
+            return false;
+        }
+        return $getData;
+    }
 }

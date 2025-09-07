@@ -152,4 +152,18 @@ class SubCategoryController extends BaseController {
 			return $this->response->format_response(Constant::RC_DB_ERROR, "Gagal Delete Category", "Delete Sub-Categories");
         }
     }
+
+    public function getId($id){
+        if (empty($id)) {
+            return false;
+        }
+
+        $getId = $this->tbl_sub_categories->getById($id);
+
+        if(!$getId){
+            return false;
+        } else {
+            return $getId;
+        }
+    }
 }

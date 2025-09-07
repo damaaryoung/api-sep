@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubCategoryController;
-
+use App\Http\Controllers\ProductsController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -39,5 +39,11 @@ Route::prefix('sub-category')->group(function () {
     Route::post('/show', [SubCategoryController::class, 'show']);
     Route::post('/update', [SubCategoryController::class, 'update']);
     Route::post('/delete', [SubCategoryController::class, 'delete']);
+});
+Route::prefix('products')->group(function () {
+    Route::post('/insert', [ProductsController::class, 'insertProduct']);
+    Route::post('/show', [ProductsController::class, 'show']);
+    Route::post('/update', [ProductsController::class, 'update']);
+    Route::post('/delete', [ProductsController::class, 'delete']);
 });
 
