@@ -53,4 +53,71 @@ class TblProducts extends Model
 		}
 		return false;
 	}
+
+	public function getAllData($data){
+		$dataList = \DB::table($this->table)
+            ->paginate(10);
+            
+        if ($dataList->isEmpty()) {
+			return false;
+        }
+		return $dataList;
+	}
+
+	public function getDataSearch($data){
+		$search_param     = $data->search_data;
+		$by_categories    = $data->by_categories;
+		$by_subcategories = $data->by_subcategories;
+
+		$dataList = \DB::table($this->table)
+			->when(!empty($search_param), function ($q) use ($search_param) {
+				$q->where(function ($q2) use ($search_param) {
+					$q2->where('name', 'LIKE', "%{$search_param}%")
+					->orWhere('description', 'LIKE', "%{$search_param}%");
+				});
+			})
+			->when(!empty($by_categories), function ($q) use ($by_categories) {
+				$q->where('categories_id', $by_categories);
+			})
+			->when(!empty($by_subcategories), function ($q) use ($by_subcategories) {
+				$q->where('sub_category_id', $by_subcategories);
+			})
+			->paginate(10);
+
+		if ($dataList->isEmpty()) {
+			return false;
+		}
+
+		return $dataList;
+	}
+
+	public function getDetailProduct($data){
+		$id_data     = $data->id_data;
+
+		$getData = DB::table($this->table)
+            ->where('id', $id_data)
+            ->first();
+
+        if (!$getData) {
+            return false;
+        }
+        return $getData;
+	}
+
+	public function deleteData(int $id): bool
+    {
+        if (empty($id)) {
+            return false;
+        }
+
+        try {
+            $deleted = DB::table($this->table)
+                ->where('id', $id)
+                ->delete();
+
+            return $deleted > 0;
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
 }

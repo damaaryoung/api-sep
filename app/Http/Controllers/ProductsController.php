@@ -17,6 +17,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubCategoryController;
 use App\Libraries\FileUploadsLibrary;
 use App\Models\TblProducts;
+use Illuminate\Support\Facades\File;
 
 
 class ProductsController extends BaseController {
@@ -59,19 +60,19 @@ class ProductsController extends BaseController {
         }
         $param = $this->request_param->get_param($request->input(Constant::REQUEST_DATA));
         $username = $request->header('X-Username');
-
+        
         // cek categori nya dulu
         $category = $this->categoryController->getId($param->categories_id);
         if(!$category){
 			return $this->response->format_response(Constant::RC_DB_ERROR, "Gagal Insert Data : Category tidak ada atau sudah dihapus", "Store Products Categories");
         }
-
+        
         //cek sub category nya dulu bos
         $subCategory = $this->subCategoryController->getId($param->sub_category_id);
         if(!$subCategory){
 			return $this->response->format_response(Constant::RC_DB_ERROR, "Gagal Insert Data : Sub-Category tidak ada atau sudah dihapus", "Store Products Categories");
         }
-
+        
         $tryUploadImg = $this->uploads->saveBase64ImageToPublicImg($param->product_img);
         if (!$tryUploadImg) {
             return $this->response->format_response(
@@ -82,7 +83,7 @@ class ProductsController extends BaseController {
         } else {
             $imageName = $tryUploadImg;
         }
-
+        
         $tyUploadPDF = $this->uploads->saveBase64PdfToPublicDocuments($param->specification_details);
         if (!$tyUploadPDF) {
             return $this->response->format_response(
@@ -93,12 +94,129 @@ class ProductsController extends BaseController {
         } else {
             $docsName = $tyUploadPDF;
         }
-
+        
         $insert_data = $this->tbl_products->insertData($param, $username, $imageName, $docsName);
         if (!$insert_data) {
 			return $this->response->format_response(Constant::RC_DB_ERROR, "Gagal Insert Data", "Store Products");
 		}
         return $this->response->format_response(Constant::RC_SUCCESS, Constant::DESC_SUCCESS, "Store Products");
+        
+    }
 
+    public function show(Request $request){
+        $rules = [
+            "search_data" => "nullable"
+        ];
+        $validator = Validator::make($request->input(Constant::REQUEST_DATA), $rules);
+        if ($validator->fails()) {
+            return $this->response->format_response(Constant::RC_PARAM_NOT_VALID, $validator->errors()->first(), "show_products");
+        }
+        $param = $this->request_param->get_param($request->input(Constant::REQUEST_DATA)); 
+        $username = $request->header('X-Username');
+
+        $allDataProducts = $this->tbl_products->getAllData($param);
+        if($allDataProducts == false){
+            return $this->response->format_response(Constant::RC_DATA_NOT_FOUND, Constant::DESC_DATA_NOT_FOUND, "Search Products");
+        }
+
+        $mappedData = collect($allDataProducts->items())->map(function ($item) {
+            return [
+                'id'           => $item->id,
+                'product_name' => $item->product_name,
+                'description'  => $item->description,
+                'product_img'  => $imgUrl = asset('img/' . $item->product_img)
+            ];
+        });
+        $response = [
+            'data' => $mappedData,
+            'pagination' => [
+                'total'        => $allDataProducts->total(),
+                'per_page'     => $allDataProducts->perPage(),
+                'current_page' => $allDataProducts->currentPage(),
+                'last_page'    => $allDataProducts->lastPage(),
+                'from'         => $allDataProducts->firstItem(),
+                'to'           => $allDataProducts->lastItem()
+            ]
+        ];
+
+        return $this->response->format_response(Constant::RC_SUCCESS, Constant::DESC_SUCCESS, "Search Category", $response);
+    }
+
+    public function searchProduct(Request $request){
+        $rules = [
+            "search_data" => "required",
+            "by_categories" => "nullable",
+            "by_subcategories" => "nullable"
+        ];
+        $validator = Validator::make($request->input(Constant::REQUEST_DATA), $rules);
+        if ($validator->fails()) {
+            return $this->response->format_response(Constant::RC_PARAM_NOT_VALID, $validator->errors()->first(), "show_products");
+        }
+        $param = $this->request_param->get_param($request->input(Constant::REQUEST_DATA)); 
+        $username = $request->header('X-Username');
+
+        $allDataProducts = $this->tbl_products->getDataSearch($param);
+        if($allDataProducts == false){
+            return $this->response->format_response(Constant::RC_DATA_NOT_FOUND, Constant::DESC_DATA_NOT_FOUND, "Search Products");
+        }
+
+        $mappedData = collect($allDataProducts->items())->map(function ($item) {
+            return [
+                'id'           => $item->id,
+                'product_name' => $item->product_name,
+                'description'  => $item->description,
+                'product_img'  => $imgUrl = asset('img/' . $item->product_img)
+            ];
+        });
+        $response = [
+            'data' => $mappedData,
+            'pagination' => [
+                'total'        => $allDataProducts->total(),
+                'per_page'     => $allDataProducts->perPage(),
+                'current_page' => $allDataProducts->currentPage(),
+                'last_page'    => $allDataProducts->lastPage(),
+                'from'         => $allDataProducts->firstItem(),
+                'to'           => $allDataProducts->lastItem()
+            ]
+        ];
+
+        return $this->response->format_response(Constant::RC_SUCCESS, Constant::DESC_SUCCESS, "Search Category", $response);
+    }
+
+    public function deleteProducts(Request $request){
+        $rules = [
+            "id_data" => "required"
+        ];
+        $validator = Validator::make($request->input(Constant::REQUEST_DATA), $rules);
+        if ($validator->fails()) {
+            return $this->response->format_response(Constant::RC_PARAM_NOT_VALID, $validator->errors()->first(), "show_products");
+        }
+        $param = $this->request_param->get_param($request->input(Constant::REQUEST_DATA)); 
+        $username = $request->header('X-Username');
+
+        $getId = $this->tbl_products->getDetailProduct($param);
+        if(!$getId){
+            return $this->response->format_response(Constant::RC_DATA_NOT_FOUND, Constant::DESC_DATA_NOT_FOUND, "Search Products");
+        } 
+
+        $product_image = $getId->product_img;
+        $spec_details = $getId->specification_details;
+
+        $result = $this->tbl_products->deleteData($param->id_data);
+        if ($result) {
+            
+            $img = public_path('img' . '/' . $product_image);
+            if (File::exists($img)) {
+                File::delete($img);
+            }
+            $documents = public_path('documents' . '/' . $spec_details);
+            if (File::exists($documents)) {
+                File::delete($documents);
+            }
+
+            return $this->response->format_response(Constant::RC_SUCCESS, Constant::DESC_SUCCESS, "Delete Categories");
+        } else {
+			return $this->response->format_response(Constant::RC_DB_ERROR, "Gagal Delete Category", "Delete Categories");
+        }
     }
 }
