@@ -33,12 +33,14 @@ Route::prefix('categories')->group(function () {
     Route::post('/show', [CategoryController::class, 'show']);
     Route::post('/update', [CategoryController::class, 'update']);
     Route::post('/delete', [CategoryController::class, 'delete']);
+    Route::post('/showAll', [CategoryController::class, 'showAll']);
 });
 Route::prefix('sub-category')->group(function () {
     Route::post('/insert', [SubCategoryController::class, 'insertSubCateory']);
     Route::post('/show', [SubCategoryController::class, 'show']);
     Route::post('/update', [SubCategoryController::class, 'update']);
     Route::post('/delete', [SubCategoryController::class, 'delete']);
+    Route::post('/showAll', [SubCategoryController::class, 'showAll']);
 });
 Route::prefix('products')->group(function () {
     Route::post('/insert', [ProductsController::class, 'insertProduct']);

@@ -113,4 +113,16 @@ class TblCategories extends Model
         }
         return $getData;
     }
+
+    public function getAllData($data){
+        $search_param = $data->search_data;
+            
+        $dataList = \DB::table($this->table)
+            ->get();
+            
+        if ($dataList->isEmpty()) {
+		    return false;
+        }
+	    return $dataList;
+    }
 }
