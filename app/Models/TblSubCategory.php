@@ -134,9 +134,9 @@ class TblSubCategory extends Model
             
         $dataList = \DB::table($this->table)
             ->where(function ($q) use ($search_param) {
-                $q->where('categories_id', '=' , "%{$search_param}%");
+                $q->where('categories_id', '=' , $search_param);
             })
-            ->paginate(10);
+            ->get();
             
         if ($dataList->isEmpty()) {
 		    return false;
