@@ -130,7 +130,7 @@ class TblSubCategory extends Model
     }
 
     public function getDataSearchByIdCat($data){
-        $search_param = $data->search_data;
+        $search_param = $data->id_categories;
             
         $dataList = \DB::table($this->table)
             ->where(function ($q) use ($search_param) {
