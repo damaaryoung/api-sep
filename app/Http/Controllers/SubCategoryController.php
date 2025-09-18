@@ -218,7 +218,7 @@ class SubCategoryController extends BaseController {
             return $this->response->format_response(Constant::RC_DATA_NOT_FOUND, Constant::DESC_DATA_NOT_FOUND, "Search Sub-Category");
         }
 
-        $mappedData = collect($search_data->items())->map(function ($item) {
+        $mappedData = $search_data->map(function ($item) {
             return [
                 'id'          => $item->id,
                 'name'        => $item->name,
@@ -232,15 +232,7 @@ class SubCategoryController extends BaseController {
             ];
         });
         $response = [
-            'data' => $mappedData,
-            'pagination' => [
-                'total'        => $search_data->total(),
-                'per_page'     => $search_data->perPage(),
-                'current_page' => $search_data->currentPage(),
-                'last_page'    => $search_data->lastPage(),
-                'from'         => $search_data->firstItem(),
-                'to'           => $search_data->lastItem()
-            ]
+            'data' => $mappedData
         ];
         return $this->response->format_response(Constant::RC_SUCCESS, Constant::DESC_SUCCESS, "Search Sub-Category", $response);
     }
