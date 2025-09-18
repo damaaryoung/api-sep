@@ -128,4 +128,19 @@ class TblSubCategory extends Model
         }
 	    return $dataList;
     }
+
+    public function getDataSearchByIdCat($data){
+        $search_param = $data->search_data;
+            
+        $dataList = \DB::table($this->table)
+            ->where(function ($q) use ($search_param) {
+                $q->where('categories_id', '=' , "%{$search_param}%");
+            })
+            ->paginate(10);
+            
+        if ($dataList->isEmpty()) {
+		    return false;
+        }
+	    return $dataList;
+    }
 }

@@ -41,6 +41,7 @@ Route::prefix('sub-category')->group(function () {
     Route::post('/update', [SubCategoryController::class, 'update']);
     Route::post('/delete', [SubCategoryController::class, 'delete']);
     Route::post('/showAll', [SubCategoryController::class, 'showAll']);
+    Route::post('/showByIdCategory', [SubCategoryController::class, 'showByIdCategory']);
 });
 Route::prefix('products')->group(function () {
     Route::post('/insert', [ProductsController::class, 'insertProduct']);
