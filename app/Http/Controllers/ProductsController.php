@@ -124,7 +124,7 @@ class ProductsController extends BaseController {
                 'id'           => $item->id,
                 'product_name' => $item->product_name,
                 'description'  => $item->description,
-                'product_img'  => $imgUrl = asset('img/' . $item->product_img)
+                'product_img'  => $imgUrl = public_path('img/' . $item->product_img)
             ];
         });
         $response = [
@@ -165,7 +165,7 @@ class ProductsController extends BaseController {
                 'id'           => $item->id,
                 'product_name' => $item->product_name,
                 'description'  => $item->description,
-                'product_img'  => $imgUrl = asset('img/' . $item->product_img)
+                'product_img'  => $imgUrl = public_path('img/' . $item->product_img)
             ];
         });
         $response = [
