@@ -124,7 +124,8 @@ class ProductsController extends BaseController {
                 'id'           => $item->id,
                 'product_name' => $item->product_name,
                 'description'  => $item->description,
-                'product_img'  => $imgUrl = asset('img/' . $item->product_img)
+                'product_img'  => env('IMG_BASE_URL') . '/' . $item->product_img, //$imgUrl = asset('img/' . $item->product_img)
+                'product_docs' => env('DOCS_BASE_URL') . '/' .$item->specification_details
             ];
         });
         $response = [
@@ -144,7 +145,7 @@ class ProductsController extends BaseController {
 
     public function searchProduct(Request $request){
         $rules = [
-            "search_data" => "required",
+            "search_data" => "nullable",
             "by_categories" => "nullable",
             "by_subcategories" => "nullable"
         ];
@@ -165,7 +166,8 @@ class ProductsController extends BaseController {
                 'id'           => $item->id,
                 'product_name' => $item->product_name,
                 'description'  => $item->description,
-                'product_img'  => $imgUrl = asset('img/' . $item->product_img)
+                'product_img'  => env('IMG_BASE_URL') . '/' . $item->product_img, //$imgUrl = asset('img/' . $item->product_img)
+                'product_docs' => env('DOCS_BASE_URL') . '/' .$item->specification_details
             ];
         });
         $response = [
