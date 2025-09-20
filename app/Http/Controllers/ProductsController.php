@@ -221,4 +221,41 @@ class ProductsController extends BaseController {
 			return $this->response->format_response(Constant::RC_DB_ERROR, "Gagal Delete Category", "Delete Categories");
         }
     }
+
+    public function detailProducts(Request $request){
+        $rules = [
+            "id_data" => "required"
+        ];
+        $validator = Validator::make($request->input(Constant::REQUEST_DATA), $rules);
+        if ($validator->fails()) {
+            return $this->response->format_response(Constant::RC_PARAM_NOT_VALID, $validator->errors()->first(), "show_products");
+        }
+        $param = $this->request_param->get_param($request->input(Constant::REQUEST_DATA)); 
+        $username = $request->header('X-Username');
+        
+        $getId = $this->tbl_products->getDetailProduct($param);
+        if(!$getId){
+            return $this->response->format_response(Constant::RC_DATA_NOT_FOUND, Constant::DESC_DATA_NOT_FOUND, "Search Products");
+        } 
+        $mappedData = collect($allDataProducts->items())->map(function ($item) {
+            return [
+                'id'              => $item->id,
+                'product_name'    => $item->product_name,
+                'description'     => $item->description,
+                'product_img'     => env('IMG_BASE_URL') . '/' . $item->product_img,
+                'product_docs'    => env('DOCS_BASE_URL') . '/' .$item->specification_details,
+                'specification'   => $item->specification,  
+                'categories_id'   => $item->categories_id,    
+                'sub_category_id' => $item->sub_category_id,    
+                'f1'          	  => $item->f1,	
+                'f2'          	  => $item->f2,	
+                'f3'          	  => $item->f3,	
+                'f4'    		  => $item->f4
+            ];
+        });
+        $response = [
+            'data' => $mappedData
+        ];
+        return $this->response->format_response(Constant::RC_SUCCESS, Constant::DESC_SUCCESS, "Detail Products", $response);
+    }
 }

@@ -49,5 +49,6 @@ Route::prefix('products')->group(function () {
     Route::post('/update', [ProductsController::class, 'update']);
     Route::post('/delete', [ProductsController::class, 'deleteProducts']);
     Route::post('/searchProduct', [ProductsController::class, 'searchProduct']);
+    Route::post('/detailProducts', [ProductsController::class, 'detailProducts']);
 });
 
