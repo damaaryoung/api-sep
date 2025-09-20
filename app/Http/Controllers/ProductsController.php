@@ -234,11 +234,10 @@ class ProductsController extends BaseController {
         $username = $request->header('X-Username');
         
         $allDataProducts = $this->tbl_products->getDetailProduct($param);
-        dd($allDataProducts);
         if(!$allDataProducts){
             return $this->response->format_response(Constant::RC_DATA_NOT_FOUND, Constant::DESC_DATA_NOT_FOUND, "Search Products");
         } 
-        $mappedData = collect($allDataProducts->items())->map(function ($item) {
+        $mappedData = collect($allDataProducts)->map(function ($item) {
             return [
                 'id'              => $item->id,
                 'product_name'    => $item->product_name,
