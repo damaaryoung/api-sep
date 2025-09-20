@@ -238,8 +238,8 @@ class ProductsController extends BaseController {
         if(!$allDataProducts){
             return $this->response->format_response(Constant::RC_DATA_NOT_FOUND, Constant::DESC_DATA_NOT_FOUND, "Search Products");
         } 
-        $mappedData = collect($allDataProducts->items())->map(function ($item) {
-            return [
+        $mappedData = 
+        [
                 'id'              => $item->id,
                 'product_name'    => $item->product_name,
                 'description'     => $item->description,
@@ -252,8 +252,7 @@ class ProductsController extends BaseController {
                 'f2'          	  => $item->f2,	
                 'f3'          	  => $item->f3,	
                 'f4'    		  => $item->f4
-            ];
-        });
+        ];
         $response = [
             'data' => $mappedData
         ];
