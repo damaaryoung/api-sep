@@ -72,7 +72,7 @@ class TblProducts extends Model
 		$dataList = \DB::table($this->table)
 			->when(!empty($search_param), function ($q) use ($search_param) {
 				$q->where(function ($q2) use ($search_param) {
-					$q2->where('name', 'LIKE', "%{$search_param}%")
+					$q2->where('product_name', 'LIKE', "%{$search_param}%")
 					->orWhere('description', 'LIKE', "%{$search_param}%");
 				});
 			})
