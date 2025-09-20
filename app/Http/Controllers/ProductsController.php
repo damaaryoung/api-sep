@@ -239,18 +239,18 @@ class ProductsController extends BaseController {
         } 
         $mappedData = 
         [
-                'id'              => $item->id,
-                'product_name'    => $item->product_name,
-                'description'     => $item->description,
-                'product_img'     => env('IMG_BASE_URL') . '/' . $item->product_img,
-                'product_docs'    => env('DOCS_BASE_URL') . '/' .$item->specification_details,
-                'specification'   => $item->specification,  
-                'categories_id'   => $item->categories_id,    
-                'sub_category_id' => $item->sub_category_id,    
-                'f1'          	  => $item->f1,	
-                'f2'          	  => $item->f2,	
-                'f3'          	  => $item->f3,	
-                'f4'    		  => $item->f4
+                'id'              => $allDataProducts->id,
+                'product_name'    => $allDataProducts->product_name,
+                'description'     => $allDataProducts->description,
+                'product_img'     => env('IMG_BASE_URL') . '/' . $allDataProducts->product_img,
+                'product_docs'    => env('DOCS_BASE_URL') . '/' .$allDataProducts->specification_details,
+                'specification'   => $allDataProducts->specification,  
+                'categories_id'   => $allDataProducts->categories_id,    
+                'sub_category_id' => $allDataProducts->sub_category_id,    
+                'f1'          	  => $allDataProducts->f1,	
+                'f2'          	  => $allDataProducts->f2,	
+                'f3'          	  => $allDataProducts->f3,	
+                'f4'    		  => $allDataProducts->f4
         ];
         $response = [
             'data' => $mappedData
