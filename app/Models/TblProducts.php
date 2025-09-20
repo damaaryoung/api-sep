@@ -56,7 +56,7 @@ class TblProducts extends Model
 
 	public function getAllData($data){
 		$dataList = \DB::table($this->table)
-            ->paginate(10);
+            ->paginate(3);
             
         if ($dataList->isEmpty()) {
 			return false;
@@ -82,7 +82,7 @@ class TblProducts extends Model
 			->when(!empty($by_subcategories), function ($q) use ($by_subcategories) {
 				$q->where('sub_category_id', $by_subcategories);
 			})
-			->paginate(10);
+			->paginate(3);
 
 		if ($dataList->isEmpty()) {
 			return false;
